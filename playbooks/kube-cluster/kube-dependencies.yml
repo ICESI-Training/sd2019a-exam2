@@ -6,12 +6,18 @@
        name: docker
        state: present
        update_cache: true
-
+   - name: Add the user 'docker'
+     user:
+       name: docker
+       state: present
+       password: 123456
+   - name: change permissions to docker user
+     shell: usermod -aG docker vagrant
    - name: start Docker
      service:
        name: docker
        state: started
-
+       enabled: yes
    - name: disable SELinux
      command: setenforce 0
 

@@ -2,11 +2,15 @@
   become: yes
   tasks:
     - name: initialize the cluster
-      shell: kubeadm init --pod-network-cidr=10.244.0.0/16 >> cluster_initialized.txt
+      shell: sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}') 
       args:
         chdir: $HOME
         creates: cluster_initialized.txt
-
+    - name: Add the user 'centos'
+      user:
+        name: centos
+        state: present
+        password: 123456
     - name: create .kube directory
       become: yes
       become_user: centos
