@@ -2,10 +2,13 @@
   become: yes
   tasks:
     - name: initialize the cluster
-      shell: sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}') 
-      args:
-        chdir: $HOME
-        creates: cluster_initialized.txt
+      shell: kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}')
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+
     - name: Add the user 'centos'
       user:
         name: centos
