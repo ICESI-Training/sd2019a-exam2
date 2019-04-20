@@ -1,22 +1,10 @@
 - hosts: master
   become: yes
   tasks:
-    - name: initialize the cluster
-      shell: kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}')
-    - name: Generate join command
-      command: kubeadm token create --print-join-command
-      register: join_command
-    - name: Copy join command to local file
-      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
 
-    - name: Add the user 'centos'
-      user:
-        name: centos
-        state: present
-        password: 123456
+    - name: initialize the cluster
+      shell: kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}')  --ignore-preflight-errors=SystemVerification
     - name: create .kube directory
-      become: yes
-      become_user: centos
       file:
         path: $HOME/.kube
         state: directory
@@ -25,13 +13,9 @@
     - name: copy admin.conf to user's kube config
       copy:
         src: /etc/kubernetes/admin.conf
-        dest: /home/centos/.kube/config
+        dest: $HOME/.kube/config
         remote_src: yes
-        owner: centos
-
     - name: install Pod network
-      become: yes
-      become_user: centos
       shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> pod_network_setup.txt
       args:
         chdir: $HOME
