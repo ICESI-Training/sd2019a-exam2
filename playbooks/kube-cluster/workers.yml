@@ -2,20 +2,22 @@
   become: yes
   gather_facts: false
   tasks:
-    - name: get join command
-      shell: kubeadm token create --print-join-command
-      register: join_command_raw
+    - name: get token
+      shell: docker swarm join-token -q worker
+      register: token_raw
 
-    - name: set join command
+    - name: set token variable
       set_fact:
-        join_command: "{{ join_command_raw.stdout_lines[0] }}"
-
+        token: "{{ token_raw.stdout_lines[0] }}"
+    - name: get master ip raw variable
+      shell: echo $(hostname -I | awk '{print $2}')
+      register: ip_raw
+    - name: set master ip variable
+      set_fact:
+        ip: "{{ ip_raw.stdout_lines[0] }}"
 
 - hosts: workers
   become: yes
   tasks:
     - name: join cluster
-      shell: "{{ hostvars['master'].join_command }} --ignore-preflight-errors all  >> node_joined.txt"
-      args:
-        chdir: $HOME
-        creates: node_joined.txt
+      shell: docker swarm join --token {{ hostvars['master'].token }} {{ hostvars['master'].ip }}:2377

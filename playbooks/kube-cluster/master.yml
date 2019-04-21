@@ -1,7 +1,6 @@
 - hosts: master
   become: yes
   tasks:
-
     - name: initialize the cluster
       shell: kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors CRI --apiserver-advertise-address $(hostname -I | awk '{print $2}')  --ignore-preflight-errors=SystemVerification
     - name: create .kube directory
@@ -15,8 +14,11 @@
         src: /etc/kubernetes/admin.conf
         dest: $HOME/.kube/config
         remote_src: yes
-    - name: install Pod network
-      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> pod_network_setup.txt
-      args:
-        chdir: $HOME
-        creates: pod_network_setup.txt
+    - name: get master ip raw variable
+      shell: echo $(hostname -I | awk '{print $2}')
+      register: ip_raw
+    - name: set ip variable
+      set_fact:
+        ip: "{{ ip_raw.stdout_lines[0] }}"
+    - name: Init docker swarm cluster
+      shell: docker swarm init --advertise-addr {{ip}}
