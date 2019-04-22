@@ -1,0 +1,27 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: install centos-release-gluster
+      yum:
+        name: centos-release-gluster
+    - name: install xfsprogs
+      yum:
+        name: xfsprogs
+    - name: install glusterfs-server
+      yum:
+        name: glusterfs-server
+        update_cache: true
+    - name: start glusterfs-server
+      service:
+        name: glusterfs-server
+        state: started
+        enabled: yes
+    - name: assign content to /dev/sdb
+      shell: |
+        sfdisk /dev/sdb << EOF
+        ;
+        EOF
+    - name: assign content to /dev/sdb
+      shell: mkdir -p /gluster/data /swarm/volumes
+    - name: assign content to /dev/sdb
+      shell: mount /dev/sdb1 /gluster/data/
