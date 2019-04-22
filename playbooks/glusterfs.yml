@@ -11,9 +11,9 @@
       yum:
         name: glusterfs-server
         update_cache: true
-    - name: start glusterfs-server
+    - name: start glusterd
       service:
-        name: glusterfs-server
+        name: glusterd
         state: started
         enabled: yes
     - name: assign content to /dev/sdb
