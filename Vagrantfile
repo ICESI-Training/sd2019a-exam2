@@ -1,4 +1,4 @@
-#$install_docker_script = <<SCRIPT
+#$install_docker_script = <<SCRIPTX
 #//sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 #//sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 #//sudo yum install docker-ce
@@ -38,14 +38,14 @@ Vagrant.configure('2') do |config|
   vm_box = 'centos/7'
 VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 NODES = 3
-DISKS = 3
+DISKS = 1
 DISK_SIZE = 5
 
 
   config.vm.define :manager, primary: true  do |manager|
     manager.vm.box = vm_box
     manager.vm.box_check_update = true
-    manager.vm.network :private_network, ip: "10.100.199.200"
+    manager.vm.network :private_network, ip: "10.0.0.1"
     manager.vm.network :forwarded_port, guest: 8080, host: 8080
     manager.vm.network :forwarded_port, guest: 5000, host: 5000
     manager.vm.hostname = "manager"
@@ -62,7 +62,7 @@ DISK_SIZE = 5
     config.vm.define "worker0#{i}" do |worker|
       worker.vm.box = vm_box
       worker.vm.box_check_update = true
-      worker.vm.network :private_network, ip: "10.100.199.20#{i}"
+      worker.vm.network :private_network, ip: "10.0.0.1#{i}"
       worker.vm.hostname = "worker0#{i}"
       worker.vm.synced_folder ".", "/vagrant"
    #   worker.vm.provision "shell", inline: $install_docker_script, privileged: true
@@ -77,7 +77,7 @@ DISK_SIZE = 5
           unless File.exist?(more_disk)
             vb.customize ['createhd', '--filename', more_disk,'--variant', 'Fixed','--size', DISK_SIZE * 1024]
           end
-          vb.customize ['storageattach', :id, '--storagectl','SCSI', '--port', k+1, '--device', 0 , '--type', 'hdd', '--medium', more_disk]
+          vb.customize ['storageattach', :id, '--storagectl','IDE', '--port', k+1, '--device', 0 , '--type', 'hdd', '--medium', more_disk]
 
 end
 
