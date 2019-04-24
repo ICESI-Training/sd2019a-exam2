@@ -44,4 +44,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/reactApp/front:/front 
+      - ./frontend/reactApp/front/front:/front 
