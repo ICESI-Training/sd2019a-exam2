@@ -17,11 +17,34 @@
         state: started
         enabled: yes
     - name: assign content to /dev/sdb
-      shell: |
-        sfdisk /dev/sdb << EOF
-        ;
-        EOF
-    - name: assign content to /dev/sdb
+      shell:
+        cmd: |
+          sfdisk /dev/sdb << EOF 
+          ; 
+          EOF
+    - name: execute command  mkfs.xfs 
+      shell: mkfs.xfs /dev/sdb1
+    - name: create directories  /gluster/data and  /dev/sdb
       shell: mkdir -p /gluster/data /swarm/volumes
-    - name: assign content to /dev/sdb
+    - name: mount /dev/sdb
       shell: mount /dev/sdb1 /gluster/data/
+    
+- hosts: master
+  become: yes
+  tasks:
+    - name: gluster add node1
+      shell: gluster peer probe node1
+    - name: gluster add node2
+      shell: gluster peer probe node2
+    - name: gluster add node3
+      shell: gluster peer probe node3
+    - name: create volume
+      shell: gluster volume create swarm-vols replica 4 node0:/gluster/data node1:/gluster/data node2:/gluster/data node3:/gluster/data force
+    - name: gluster start volume
+      shell: gluster volume start swarm-vols
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: mount swarm in all nodes
+      shell: mount.glusterfs localhost:/swarm-vols /swarm/volumes

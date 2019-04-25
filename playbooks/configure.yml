@@ -8,4 +8,4 @@
   - name: define node2 in /etc/hosts file
     shell: echo "192.168.56.103 node2" >> /etc/hosts
   - name: define node3 in /etc/hosts file
-    shell: echo "192.168.56.103 node3" >> /etc/hosts
+    shell: echo "192.168.56.104 node3" >> /etc/hosts
