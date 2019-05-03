@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+    mongo:
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        volumes:
+            - ./dev/sdb1:/data/db
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: 20M
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: ds-exam2
+    api_server:
+        build: ./server
+        ports:
+            - 5001:5001
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: 20M
+        links:
+            - mongo
+        depends_on:
+            - mongo
+    web:
+        build: ./client
+        ports:
+            - 5000:80
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: 20M
+        links:
+            - api_server
+        depends_on:
+            - api_server

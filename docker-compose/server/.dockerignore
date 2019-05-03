@@ -1,0 +1,3 @@
+Dockerfile
+populateMongo.js
+.dockerignore
