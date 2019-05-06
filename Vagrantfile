@@ -1,12 +1,3 @@
-#$install_docker_script = <<SCRIPTX
-#//sudo yum install -y yum-utils device-mapper-persistent-data lvm2
-#//sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#//sudo yum install docker-ce
-#//sudo usermod -aG docker $(whoami)
-#//sudo systemctl enable docker.service
-#//sudo systemctl start docker.service
-#//sudo yum install epel-release
-#//sudo yum install -y python-pip
 #//sudo pip install docker-compose
 #//sudo yum upgrade python*
 #//docker-compose version
@@ -33,9 +24,11 @@
 #docker swarm join --token $(cat /vagrant/worker_token) 10.100.199.200:2377
 #SCRIPT
 
+VAGRANTFILE_API_VERSION = "2"
+
 Vagrant.configure('2') do |config|
 
-  vm_box = 'centos/7'
+vm_box = 'centos/7'
 VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 NODES = 3
 DISKS = 1
@@ -55,7 +48,19 @@ DISK_SIZE = 5
     manager.vm.provider "virtualbox" do |vb|
       vb.name = "manager"
       vb.memory = "1024"
+    
+    more_disk = File.join(VAGRANT_ROOT, "DATA/node_master_disk.vdi")
+          unless File.exist?(more_disk)
+            vb.customize ['createhd', '--filename', more_disk,'--variant', 'Fixed','--size', DISK_SIZE * 1024]
+          end
+          vb.customize ['storageattach', :id, '--storagectl', "IDE", '--port', 1, '--device', 0 , '--type', 'hdd', '--medium', more_disk]  
+
     end
+    config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbooks/playbook_master.yml"
+  end
+
+		
   end
 
   (1..NODES).each do |i|
@@ -77,19 +82,16 @@ DISK_SIZE = 5
           unless File.exist?(more_disk)
             vb.customize ['createhd', '--filename', more_disk,'--variant', 'Fixed','--size', DISK_SIZE * 1024]
           end
-          vb.customize ['storageattach', :id, '--storagectl','IDE', '--port', k+1, '--device', 0 , '--type', 'hdd', '--medium', more_disk]
+          vb.customize ['storageattach', :id, '--storagectl', "IDE", '--port', 1, '--device', 0 , '--type', 'hdd', '--medium', more_disk]
 
 end
-
-
 
 
  end
     end
   end
 
-
 config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yaml"
+    ansible.playbook = "playbooks/playbook_workers.yml"
   end
 end
