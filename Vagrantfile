@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 VAGRANTFILE_API_VERSION = "2"
 nodes = {
-  "k8s_node_0b" => { :ip => "192.168.56.101", :cpus => 1, :mem => 2048, :disk => './firstDisk.vdi', :node_name => 'node0' },
+  "k8s_node_0b" => { :ip => "192.168.56.101", :cpus => 3, :mem => 2560, :disk => './firstDisk.vdi', :node_name => 'node0' },
   "k8s_node_1b" => { :ip => "192.168.56.102", :cpus => 1, :mem => 1024, :disk => './secondDisk.vdi', :node_name => 'node1'},
   "k8s_node_2b" => { :ip => "192.168.56.103", :cpus => 1, :mem => 1024, :disk => './thirdDisk.vdi', :node_name => 'node2'},
   "k8s_node_3b" => { :ip => "192.168.56.104", :cpus => 1, :mem => 1024, :disk => './fourthDisk.vdi', :node_name => 'node3'}

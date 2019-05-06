@@ -1,5 +1,31 @@
 version: "3.7"
 services:
+    kibana:
+        image: elastic/kibana:6.4.3
+        ports:
+            - "5601:5601"
+
+    elasticsearch:
+        image: elastic/elasticsearch:6.4.3
+        environment:
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        expose:
+            - 9200
+        ports:
+            - "9200:9200"
+
+    fluentd:
+        build: ./fluentd
+        volumes:
+            - ./fluentd/conf:/fluentd/etc
+        ports:
+            - "24224:24224"
+            - "24224:24224/udp"
+
     mongo:
         image: mongo
         restart: always
@@ -15,6 +41,7 @@ services:
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: ds-exam2
+
     api_server:
         build: ./server
         ports:
@@ -24,10 +51,17 @@ services:
                 limits:
                     cpus: "0.10"
                     memory: 20M
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: httpd.access
+
         links:
             - mongo
         depends_on:
             - mongo
+
     web:
         build: ./client
         ports:
@@ -41,3 +75,6 @@ services:
             - api_server
         depends_on:
             - api_server
+
+
+
