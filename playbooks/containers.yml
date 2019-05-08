@@ -22,7 +22,13 @@
       command: docker-compose build
       args:
         chdir: /docker-compose/
-    - name: execute containers
-      command: docker-compose up
+    - name: create service registry
+      command: docker service create --name registry --publish published=5000,target=5000 registry:2
+    - name: push images to registry service
+      command: docker-compose push
+      args:
+        chdir: /docker-compose/
+    - name: deploy docker stack
+      command: docker stack deploy --compose-file docker-compose.yml stackds
       args:
         chdir: /docker-compose/
