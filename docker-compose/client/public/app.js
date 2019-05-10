@@ -1,7 +1,7 @@
 'use strict';
 
 // URL to the endpoint where the data is stored
-const url = 'api_server:5001';
+const url = '127.0.0.1:5001';
 const endpoint = `http://${url}/api/dinosaurs`;
 let dinosaurs = [];
 /**

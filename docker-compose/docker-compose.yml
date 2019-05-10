@@ -19,6 +19,7 @@ services:
             - "9200:9200"
 
     fluentd:
+        image: 127.0.0.1:5000/fluentd
         build: ./fluentd
         volumes:
             - ./fluentd/conf:/fluentd/etc
@@ -32,7 +33,7 @@ services:
         ports:
             - 27017:27017
         volumes:
-            - ./dev/sdb1:/data/db
+            - /gluster/data:/data/db
         deploy:
             resources:
                 limits:
@@ -55,14 +56,8 @@ services:
         logging:
             driver: "fluentd"
             options:
-                fluentd-address: localhost:24224
+                fluentd-address: 127.0.0.1:24224
                 tag: httpd.access
-
-        links:
-            - mongo
-        depends_on:
-            - mongo
-
     web:
         image: 127.0.0.1:5000/client
         build: ./client
@@ -73,10 +68,6 @@ services:
                 limits:
                     cpus: "0.10"
                     memory: 20M
-        links:
-            - api_server
-        depends_on:
-            - api_server
 
 
 
