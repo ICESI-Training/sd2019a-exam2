@@ -23,6 +23,8 @@ services:
     image: elastic/kibana:6.4.3
     ports:
       - "5601:5601" 
+    volumes:
+      - ./kibana:/usr/share/kibana/config
   redis:
     image: redis:latest
     expose: 
