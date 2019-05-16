@@ -1,0 +1,6 @@
+FROM node 
+WORKDIR /front
+CMD chmod a+x node_modules/.bin/react-scripts
+RUN npm install -g create-react-app 
+ENTRYPOINT ["npm", "start"]
+
