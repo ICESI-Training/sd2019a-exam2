@@ -12,14 +12,14 @@ custom_format = {
 
 logging.basicConfig(level=logging.INFO)
 l = logging.getLogger('app.logger')
-h = handler.FluentHandler('app.follow', host='192.168.130.180', port=24224)
+h = handler.FluentHandler('app.follow', host='192.168.0.18', port=24224)
 formatter = handler.FluentRecordFormatter(custom_format)
 h.setFormatter(formatter)
 l.addHandler(h)
 
 
 app = Flask(__name__)
-r= redis.Redis(host='192.168.130.180', port= 6379 , db=0)
+r= redis.Redis(host='192.168.0.18', port= 6379 , db=0)
 @app.route('/result', methods = ['GET'])
 def result():
     if request.method == 'GET':
