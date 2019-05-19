@@ -32,6 +32,6 @@ coomo prodemos observar los logs son personalizables y en ellos se puede ver el 
 
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/c7.PNG)
 
-Problemas encontrados: 
+}**Problemas encontrados:** 
 
 El direccionamiento de la app debe cambiarse para correcto funcionamiento, lo que implica el cambio de las ips en el codigo cada vez que se corre en una maquina distinta.
