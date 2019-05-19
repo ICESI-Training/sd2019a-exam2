@@ -1,0 +1,34 @@
+- hosts: master
+  become: yes
+  tasks:
+    - name: Add EPEL YUM repository
+      yum_repository:
+        name: epel
+        description: EPEL YUM repo
+        baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    - name: Install the packages for python-pip
+      yum: 
+        name:  python-pip 
+        state: present
+        disable_gpg_check: true
+    - name: Install the latest docker-compose package
+      pip: name=docker-compose state=latest
+    - name: create service registry
+      command: docker service create --name registry --publish published=5000,target=5000 registry:2
+    - name: Copy docker-compose folder
+      copy:
+        src: ../docker-compose
+        dest: /
+        mode: 0774
+    - name: build containers
+      command: docker-compose build --no-cache
+      args:
+        chdir: /docker-compose/
+    - name: push images to registry service
+      command: docker-compose push
+      args:
+        chdir: /docker-compose/
+    - name: deploy docker stack
+      command: docker stack deploy --compose-file docker-compose.yml stackds --with-registry-auth
+      args:
+        chdir: /docker-compose/

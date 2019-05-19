@@ -1,0 +1,23 @@
+- hosts: master
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: get token
+      shell: docker swarm join-token -q worker
+      register: token_raw
+
+    - name: set token variable
+      set_fact:
+        token: "{{ token_raw.stdout_lines[0] }}"
+    - name: get master ip raw variable
+      shell: echo $(hostname -I | awk '{print $2}')
+      register: ip_raw
+    - name: set master ip variable
+      set_fact:
+        ip: "{{ ip_raw.stdout_lines[0] }}"
+
+- hosts: workers
+  become: yes
+  tasks:
+    - name: join cluster
+      shell: docker swarm join --token {{ hostvars['master'].token }} {{ hostvars['master'].ip }}:2377
