@@ -9,31 +9,31 @@ El entorno que se va a desplegar son 3 máquinas que cumplen con los roles de: u
 
 El siguiente código muestra la instalación de Docker para todos los nodos.
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a1.PNG)
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a1.png)
 
 Docker ser utilizará con el fin de crear entre los 3 nodos un cluster para el despliegue de servicios distribuidos, esto aumentará la alta disponibilidad del servicio.
 
 A su vez, se instalara GlusterFs y XFS con el objetivo de crear un cluster de almacenamiento.
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a2.PNG)
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a2.png)
 
 Se debe activar los puertos necesarios en el Firewall para que el Gluster trabaje de forma correcta.
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a3.PNG)
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a3.png)
 
 Se crea la partición en cada nodo para adjuntar el disco que utilizará el Gluster
 Se crea el FileSystem en el disco 
 Se montan los discos
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a4.PNG)
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a4.png)
 
 Se inicia el Cluster del Docker Swarm en el nodo MAESTRO
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a5.PNG)
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a5.png)
 
 Para los nodos Worker la diferencia es que NO crean el cluster de swarm sino que se unen al cluster creado
 
-![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/integration/images/a7.PNG)
+![alt text](images/a7.png)
 
 ## APP
 
