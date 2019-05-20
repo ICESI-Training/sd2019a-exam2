@@ -67,3 +67,14 @@ coomo prodemos observar los logs son personalizables y en ellos se puede ver el 
 **Problemas encontrados:** 
 
 El direccionamiento de la app debe cambiarse para correcto funcionamiento, lo que implica el cambio de las ips en el codigo cada vez que se corre en una maquina distinta.
+
+
+## INFRAESTRUCTURA
+toda la infraestructura de compone de 4 maquinas en las cuales se implementaron todos los servicios, uno como manager y los otros 3 como workers, en esta parte se utilizó docker swarm para poder introducir todos los nodos al cluster.
+
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/edi2/images/infra1.png)
+
+Por medio de vagrantfile y de ansible se hizo toda la parte de aprovicionamiento inicial para empesar a configurar cada uno de los nodos.
+
+![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/edi2/images/infra2.png)
+
