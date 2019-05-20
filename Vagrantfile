@@ -57,7 +57,7 @@ DISK_SIZE = 5
 
     end
     config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbooks/playbook_master.yml"
+    ansible.playbook = "playbooks/playbook.yml"
   end
 
 		
@@ -92,6 +92,6 @@ end
   end
 
 config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbooks/playbook_workers.yml"
+    ansible.playbook = "playbooks/playbook.yml"
   end
 end

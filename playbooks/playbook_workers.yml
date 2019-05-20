@@ -100,10 +100,9 @@
      docker_swarm:
         state: join
         advertise_addr: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-        join_token: token_prueba.swarm_facts.JoinTokens.Worker
+        join_token: "{{hostvars.host_token.token}}"
         remote_addrs: 10.0.0.1  
  #  - name: Iniciar cluster docker swarm
  #    docker_swarm:
  #      state: join
  #      join_token: "{{worker_token.stdout}}"
-

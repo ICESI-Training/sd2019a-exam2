@@ -154,6 +154,15 @@
    - name: Test hosts list
      debug:
        msg: "{{ token_prueba.swarm_facts.JoinTokens.Worker }}"
+
+   - name: Add host with TOken
+     add_host:
+         name: host_token
+         token: " {{ token_prueba.swarm_facts.JoinTokens.Worker }}"
+
+   - name: test 2
+     debug:
+       msg: " {{hostvars.host_token.token}} "
 #   - name: "get docker swarm worker token"
 #     shell: docker swarm join-token -q worker
 #     register: worker_token
