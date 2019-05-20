@@ -8,25 +8,31 @@ Repository for the exam2
 El entorno que se va a desplegar son 3 máquinas que cumplen con los roles de: una ser host maestro y los otros dos, ser nodos workers. Ambas máquinas serán aprovisionados a través de un Ansible playbook. Playbook que se encuentra en playbooks/playbook.yml.
 
 El siguiente código muestra la instalación de Docker para todos los nodos.
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a1.PNG)
 
 Docker ser utilizará con el fin de crear entre los 3 nodos un cluster para el despliegue de servicios distribuidos, esto aumentará la alta disponibilidad del servicio.
 
 A su vez, se instalara GlusterFs y XFS con el objetivo de crear un cluster de almacenamiento.
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a2.PNG)
 
 Se debe activar los puertos necesarios en el Firewall para que el Gluster trabaje de forma correcta.
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a3.PNG)
 
 Se crea la partición en cada nodo para adjuntar el disco que utilizará el Gluster
 Se crea el FileSystem en el disco 
 Se montan los discos
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a4.PNG)
 
 Se inicia el Cluster del Docker Swarm en el nodo MAESTRO
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a5.PNG)
 
 Para los nodos Worker la diferencia es que NO crean el cluster de swarm sino que se unen al cluster creado
+
 ![alt text](https://github.com/Danielperga97/sd2019a-exam2/blob/danielperga97/images/a7.PNG)
 
 ## APP
