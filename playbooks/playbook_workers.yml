@@ -1,0 +1,108 @@
+#
+- hosts: worker01 worker02 worker03
+  user: ansible
+  become: true
+  become_method: sudo
+  tasks:
+   - name: "Installing Docker Prerequisite packages"
+     yum:
+        name: "{{ item }}"
+        state: latest
+     with_items:
+         - yum-utils
+         - device-mapper-persistent-data
+         - lvm2
+   - name: "Configuring docker-ce repo"
+     get_url:
+         url: https://download.docker.com/linux/centos/docker-ce.repo
+         dest: /etc/yum.repos.d/docker-ce.repo
+         mode: 0644
+   - name: " Installing Docker latest version"
+     yum:
+       name: docker-ce
+       state: present
+   - name: "start firewalld"
+     service:
+        name: firewalld
+        state: started
+        enabled: yes
+   - name: "Deshabilitando firewall"
+     firewalld:
+       port: 0-6500/tcp
+       permanent: yes
+       state: enabled
+   - name: "Deshabilitando firewall udp"
+     firewalld:
+       port: 0-6500/udp
+       permanent: yes
+       state: enabled
+
+   - name: " Starting and Enabling Docker service"
+     service:
+       name: docker
+       state: started
+       enabled: yes
+   - name: "Installing repo de Gluster"
+     yum:
+       name: centos-release-gluster
+       state: present
+   - name: "Installing GlusterFs"
+     yum:
+        name: glusterfs-server
+        state: present
+   - name: "instalando xfs"
+     yum:
+       name: xfsprogs
+       state: present
+   - name: "Make sure gluterfs is running"
+     service:
+        name: glusterd
+        state: started
+        enabled: yes
+   - name: "creando particion"
+     parted:
+         device: /dev/sdb
+         number: 1
+         state: present
+   - name: "Creando filesystem"
+     filesystem:
+         fstype: xfs
+         dev: /dev/sdb1
+   - name: "Asegurando la existencia de directorios"
+     file: 
+       path: "{{ item }}"
+       state: directory
+       force: yes
+     with_items:
+        - "/gluster/data"
+        - "/swarm/volumes"
+   - name: "Montando discos"
+     mount:
+        name: /gluster/data
+        src: /dev/sdb1
+        fstype: xfs
+        state: mounted
+   - name: instalando repo pip
+     yum:
+      name: epel-release
+      state: latest
+   - name: instalando python-pip
+     yum:
+       name: python-pip
+       state: latest
+   - name: instalan modulo python docker
+     pip:
+       name: docker
+   - name: Test hosts list
+     debug:
+        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+   - name: Adjuntando al maestro
+     docker_swarm:
+        state: join
+        advertise_addr: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+        join_token: "{{hostvars.host_token.token}}"
+        remote_addrs: 10.0.0.1  
+ #  - name: Iniciar cluster docker swarm
+ #    docker_swarm:
+ #      state: join
+ #      join_token: "{{worker_token.stdout}}"

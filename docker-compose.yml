@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+  fluentd:
+    image: danielperga/fluentd:1.0.0
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+  elastic:
+    image: elastic/elasticsearch:6.4.3
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1 
+        hard: -1 
+    ports: 
+      - "9200:9200"
+  kibana:
+    image: elastic/kibana:6.4.3
+    ports:
+      - "5601:5601" 
+    volumes:
+      - ./kibana:/usr/share/kibana/config
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - data:/data
+  python_backend:
+    image: danielperga/backend:1.0.0
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/code:/app
+  react_frontend:
+    image: danielperga/frontend:1.0.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/reactApp/front/front:/front 
+volumes:
+  data:
